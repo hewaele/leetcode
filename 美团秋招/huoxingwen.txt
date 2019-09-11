@@ -1,0 +1,75 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+char s[100010], ss[1010][1010];
+
+int G[30][30], indeg[30], have[30];
+
+int main() {
+    gets(s);
+    for(int i = 0; i < 30; i++) {
+        have[i] = 1;
+        indeg[i] = 10;
+    }
+    int cnt = 0, len = 0, up = 0, time = 0;
+    for(int i = 0; i <= strlen(s); i++) {
+        if(s[i] == ' ' || i == strlen(s)) {
+            ss[cnt++][len] = '\0';
+            up = max(up, len);
+            len = 0;
+        } else {
+            ss[cnt][len++] = s[i];
+            time += have[s[i] - 'a'];
+            have[s[i] - 'a'] = 0;
+            indeg[s[i] - 'a'] = 0;
+        }
+    }
+    for(int i = 0; i < 30; i++) {
+        for(int j = 0; j < 30; j++) {
+            G[i][j] = 0;
+        }
+    }
+    for(int j = 0; j < up; j++) {
+        int last = 0;
+        for(int i = 1; i < cnt; i++) {
+            if(j >= strlen(ss[i])) {
+                continue;
+            }
+            bool flag = true;
+            for(int k = 0; k < j; k++)
+                if( ss[last][k] != ss[i][k])
+                    flag = false;
+                if(flag && ss[last][j] != ss[i][j]) {
+                    G[ss[last][j] - 'a'][ss[i][j] - 'a'] = 1;
+                    indeg[ss[i][j] - 'a']++;
+                }
+                last = i;
+        }
+    }
+    string ans = "";
+    queue<int> q;
+    for(int i = 0; i < 30; i++) {
+        if(indeg[i] == 0) {
+            q.push(i);
+        }
+    }
+    while(!q.empty()) {
+        int u = q.front();
+        q.pop();
+        ans += (char)u + 'a';
+        for(int i = 0; i < 26; i++) {
+            if(G[u][i] == 1) {
+                indeg[i]--;
+                if(indeg[i] == 0) {
+                    q.push(i);
+                }
+            }
+        }
+    }
+    if(ans.length() == time) {
+            cout<<ans<<endl;
+        } else {
+            cout<<"invalid"<<endl;
+        }
+    return 0;
+}
