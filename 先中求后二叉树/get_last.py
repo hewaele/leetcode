@@ -1,7 +1,7 @@
 #根据前序中序求出后续
 #
 # 前序：ABDEFCGH
-# 后序：DBFEAGCH
+# 中序：DBFEAGCH
 class Solution():
     def __init__(self, pre, mid):
         self.pre = pre
